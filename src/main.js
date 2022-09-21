@@ -16,7 +16,6 @@ Vue.prototype.$axios= axios
 import VueSimpleAlert from "vue-simple-alert";
 Vue.use(VueSimpleAlert);
 
-
 // 使用插件
 Vue.use(ElementUI) // element ui 插件
 Vue.use(VueRouter) // 路由插件
@@ -31,8 +30,11 @@ axios.defaults.responseType = 'json'
 import MathJax from "@/common/js/MathJax.js";
 Vue.prototype.MathJax = MathJax
 Vue.config.productionTip = false
+
 // 创建 Vue 实例对象
 new Vue({
   render: h => h(App),  // render 函数将帮助解析模板，传入的参数 h 为一个函数，该函数可用来解析 App 这个组件
   router
 }).$mount('#app') // 将 App.vue 组件挂载到 index.html 中的 id 为 app 的 div 标签上
+
+

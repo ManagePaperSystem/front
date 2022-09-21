@@ -49,6 +49,7 @@
 
 <script>
 import ElementUI from "element-ui";
+import CryptoJS from "crypto-js/crypto-js";
 
 export default {
   data() {
@@ -112,6 +113,19 @@ export default {
     };
   },
   methods: {
+    myEncrypt(word){
+      //密钥和偏移量
+      let key = CryptoJS.enc.Utf8.parse("1234567890123456");
+      let iv =  CryptoJS.enc.Utf8.parse('1234567890123456');
+      let srcs = CryptoJS.enc.Utf8.parse(word);
+      var encrypted = CryptoJS.AES.encrypt(srcs, key, {
+        iv: iv,
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.ZeroPadding
+      });
+      console.log("加密后", encrypted.ciphertext)
+      return CryptoJS.enc.Base64.stringify(encrypted.ciphertext);
+    },
     getCode(){
       this.axios({
         url:"/user/getcode",
@@ -159,7 +173,7 @@ export default {
                   'Content-Type':'application/x-www-form-urlencoded'
                   // 'Content-Type':'application/json'
                 },
-                data:"Account=" + this.ruleForm.uname + "&Password=" + this.ruleForm.password
+                data:"Account=" + this.ruleForm.uname + "&Password=" + this.myEncrypt(this.ruleForm.password)
               }).then( (response)=> {
                 response.data;
                 ElementUI.Message.success("注册成功");

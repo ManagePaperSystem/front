@@ -1,12 +1,13 @@
 <template>
   <div>
-    <el-progress :show-text="false" :width="120" :stroke-width="12" type="circle"
-                 :percentage="this.score">
+    <el-progress :show-text="true" :width="200" :stroke-width="12" type="circle"
+                 :percentage="this.score" status="success"  >
     </el-progress>
-    <div class="circleCenter">
+    <br><br>
+    <div class="circleCenter" >
       <div>你的分数为{{ this.score }}</div>
     </div>
-    <el-button-group>
+    <el-button-group class="add_btn">
       <el-button @click="returnHome">回到首页</el-button>
       <el-button @click="returnPaper">重新考试</el-button>
     </el-button-group>
@@ -15,9 +16,10 @@
 
 <script>
 export default {
+  inject:["reload"],
   data(){
     return{
-      score: 0.0,
+      score: 0,
       fullNumber: ''
     }
   },
@@ -38,3 +40,13 @@ export default {
   }
 }
 </script>
+<style>
+
+.add_btn {
+min-width: 20%;
+min-height: 60px;
+margin-top: 30px;
+font-size: 25px;
+border-radius: 40px;
+}
+</style>

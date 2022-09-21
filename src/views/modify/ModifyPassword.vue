@@ -30,12 +30,16 @@ export default {
   name: 'modifyPassword',
   data() {
     let checkOldPassword = (rule, value, callback) => {
-      console.log("原来的密码"  + window.sessionStorage.getItem('password'));
-      console.log("输入的密码" + this.ruleForm.oldPassword)
       if (value === '') {
-        callback(new Error('请输入原密码'));
+        this.$message({
+          message: "请输入原密码！",
+          type: 'warning'
+        })
       } else if (value !== window.sessionStorage.getItem('password')){
-        callback(new Error('原密码不正确'));
+        this.$message({
+          message: "原密码不正确！",
+          type: 'error'
+        })
       } else {
         callback();
       }
@@ -43,9 +47,15 @@ export default {
     let validatePasswordLegal = (rule, value, callback) => {
       let reg= /^.*(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])\w{6,10}$/
       if (value === '') {
-        callback(new Error('请输入密码'));
+        this.$message({
+          message: "请输入密码！",
+          type: 'error'
+        })
       } else if(!reg.test(value)) {
-        callback(new Error('密码必须是由6-10位大小写字母+数字组合'))
+        this.$message({
+          message: "密码必须是由6-10位大小写字母+数字组合！",
+          type: 'error'
+        })
       } else {
         if (this.ruleForm.newPassword !== '') {
           this.$refs.ruleForm.validateField('checkPassword');
@@ -55,9 +65,15 @@ export default {
     };
     let validatePasswordSame = (rule, value, callback) => {
       if (value === '') {
-        callback(new Error('请再次输入新密码'));
+        this.$message({
+          message: "请再次输入新密码！",
+          type: 'warning'
+        })
       } else if (value !== this.ruleForm.checkPassword) {
-        callback(new Error('两次输入密码不一致!'));
+        this.$message({
+          message: "两次输入密码不一致！",
+          type: 'error'
+        })
       } else {
         callback();
       }
@@ -84,9 +100,6 @@ export default {
   },
   mounted(){
     this.ruleForm.username = sessionStorage.getItem("username");
-    this.ruleForm.oldPassword = sessionStorage.getItem("password");
-    console.log("开始渲染" + this.ruleForm.username)
-    console.log("开始渲染2" + this.ruleForm.oldPassword);
   },
   methods: {
     submitForm() {

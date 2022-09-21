@@ -39,8 +39,10 @@
 </template>
 
 <script>
+import CryptoJS from 'crypto-js/crypto-js'
 export default {
   data() {
+
     return {
       ruleForm: {
         uname: "",
@@ -58,6 +60,37 @@ export default {
     };
   },
   methods: {
+    myEncrypt(word){
+      //密钥和偏移量
+      let key = CryptoJS.enc.Utf8.parse("1234567890123456");
+      let iv =  CryptoJS.enc.Utf8.parse('1234567890123456');
+      console.log("key  " +  key)
+      console.log("iv  " + iv)
+      let srcs = CryptoJS.enc.Utf8.parse(word);
+      var encrypted = CryptoJS.AES.encrypt(srcs, key, {
+        iv: iv,
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.ZeroPadding
+      });
+      console.log("加密后", CryptoJS.enc.Base64.stringify(encrypted.ciphertext))
+      console.log("解密后", this.myDecrypt(CryptoJS.enc.Base64.stringify(encrypted.ciphertext)))
+      return CryptoJS.enc.Base64.stringify(encrypted.ciphertext);
+    },
+    myDecrypt(word) {
+      let key = CryptoJS.enc.Utf8.parse("1234567890123456");
+      let iv =  CryptoJS.enc.Utf8.parse('1234567890123456');
+      let base64 = CryptoJS.enc.Base64.parse(word);
+      let src = CryptoJS.enc.Base64.stringify(base64);
+
+      var decrypt = CryptoJS.AES.decrypt(src, key, {
+        iv: iv,
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.ZeroPadding
+      });
+
+      var decryptedStr = decrypt.toString(CryptoJS.enc.Utf8);
+      return decryptedStr.toString();
+    },
     resetForm() {
       this.$refs.ruleForm.resetFields();
     },
@@ -77,7 +110,7 @@ export default {
               'Content-Type':'application/x-www-form-urlencoded'
               // 'Content-Type':'application/json'
             },
-            data: "Account="+this.ruleForm.uname + "&Password=" + this.ruleForm.password
+            data: "Account="+this.ruleForm.uname + "&Password=" + this.myEncrypt(this.ruleForm.password)
           }).then((res) => { // 当收到后端的响应时执行该括号内的代码，res 为响应信息，也就是后端返回的信息
             if (res.data.flag === true) {  // 当响应的编码为 0 时，说明登录成功
               // 将用户信息存储到sessionStorage中
