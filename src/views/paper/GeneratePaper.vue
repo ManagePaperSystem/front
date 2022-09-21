@@ -80,7 +80,6 @@ export default {
       answerB : [],
       answerC : [],
       answerD : [],
-      score: 1,
       rules: {
         number: [
           { validator: validateNumber, trigger: 'blur' }
@@ -112,6 +111,7 @@ export default {
       this.$formula(document.getElementById("questions[currentNumber-1]"));
     },
   computeScores() {
+      let allN = 0;
       let allQuestions='';
       let allChoices='';
       let size = this.questionForm.number;
@@ -164,11 +164,15 @@ export default {
           let size = response.data.length;
           console.log(response.data)
           for(let i = 0 ; i < size ; i ++){
+            console.log("进入循环 " + i)
             if(response.data[i] === true){
-              console.log("报错地点",this.score)
-              this.score = this.score + 1;
+              console.log("第" + i + "次")
+              allN  = allN + 1;
             }
           }
+          console.log(response.data)
+          console.log("all 为"  + allN)
+          sessionStorage.setItem("score", allN);
         } else {
           this.$message({
             message: response.data.message,
@@ -176,17 +180,16 @@ export default {
           });
         }
       })
+      sessionStorage.setItem("score", allN);
       this.$message({
-        message: '提交成功 你本次考试的分数为: ' + (this.score - 1)/this.questionForm.number * 100,
+        message: '提交成功试卷成功！',
         type: 'success'
-      });
-      sessionStorage.setItem("score", this.score - 1);
+    });
     },
     getPaper() {
       console.log("获得试卷");
-      var _this = this;
-      this.score = 1;
-      this.$refs.questionForm.validate(async (valid) => {
+      let _this = this;
+      this.$refs.questionForm.validate((valid) => {
         if (valid) {
           _this.currentNumber = 1;
           _this.questionForm.selection = '';
@@ -270,7 +273,6 @@ export default {
       this.$router.push('/viewScore');
     },
     reTest() {
-      this.score = 1;
       this.currentNumber = 1;
       this.questionForm.selection = '';
       this.questionForm.resultChoices = [];
