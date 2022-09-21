@@ -1,4 +1,5 @@
 <template>
+  <div>
   <el-table
       v-loading="loading"
       :data="tableData"
@@ -25,6 +26,8 @@
       </template>
     </el-table-column>
   </el-table>
+  <el-button>返回首页</el-button>
+  </div>
 </template>
 
 <script>

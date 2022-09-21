@@ -27,25 +27,9 @@ axios.defaults.headers['token'] = localStorage.getItem('token') || ''
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 axios.defaults.responseType = 'json'
 
-// 引入katex下的自动渲染函数
-import renderMathInElement from 'katex/contrib/auto-render/auto-render'
-
-// 定义自动渲染的配置参数,这些参数根据你的需求进行修改，下面的参数是官网上抄下来的
-const renderOption = {
-  delimiters: [
-    {left: '$$', right: '$$', display: true},
-    {left: '$', right: '$', display: false},
-    {left: '\\(', right: '\\)', display: false},
-    {left: '\\[', right: '\\]', display: true}
-  ],
-  throwOnError : false
-}
-
-// 挂载自动渲染函数到vue原型
-Vue.prototype.$formula = function (dom) {
-  renderMathInElement(dom, renderOption)
-}
-
+import MathJax from "@/common/js/MathJax.js";
+Vue.prototype.MathJax = MathJax
+Vue.config.productionTip = false
 // 创建 Vue 实例对象
 new Vue({
   render: h => h(App),  // render 函数将帮助解析模板，传入的参数 h 为一个函数，该函数可用来解析 App 这个组件

@@ -1,12 +1,15 @@
 <template>
+  <div>
   <el-table
       :data="tableData"
       style="width: 100%">
     <el-table-column
         label="题目"
         width="300"
-        prop="question"
-        id="q">
+        prop="question">
+      <template slot-scope="scope">
+        <div class="hello" >$${{ scope.row.question }}$$</div>
+      </template>
     </el-table-column>
     <el-table-column
         label="选项A"
@@ -36,8 +39,10 @@
         prop="correctAnswer">
     </el-table-column>
   </el-table>
+  </div>
 </template>
 <script>
+import MathJax from "@/common/js/MathJax";
 export default {
   data(){
     return {
@@ -59,11 +64,26 @@ export default {
     this.username = sessionStorage.getItem("username")
     console.log("时间"+this.timeString)
     this.getCurrentTimePaper();
-    this.render();
+    this.formatMath()
+    this.formatMath()
   },
   methods:{
+    created() {
+      this.formatMath();
+    },
+    formatMath() {
+      let that = this;
+      setTimeout(function () {
+        that.$nextTick(function () {
+          if(MathJax.isMathjaxConfig){//判断是否初始配置，若无则配置。
+            MathJax.initMathjaxConfig();
+          }
+          MathJax.MathQueue("hello");//传入组件id，让组件被MathJax渲染
+        })
+      },1);
+    },
     render(){
-      this.$formula(document.getElementById('q'));
+      this.$formula(document.getElementById("questions[currentNumber-1]"));
     },
     getCurrentTimePaper(){
       this.axios({

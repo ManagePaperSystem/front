@@ -1,34 +1,43 @@
 <template>
   <div class="show">
+
+    <div style="opacity:0.5;position:absolute;top:125px;left:20px;width:500px;height:70px;background-color:#ffffff; color: #ffffff"></div>
     <el-form ref="questionForm" :model="questionForm" :rules="rules" size="large">
       <el-container id="quesContainer">
         <el-main>
           <span>NO.{{currentNumber}}</span>
-          <div style="text-align: center;" id="ques"> <span>{{questions[currentNumber-1]}} </span></div>
+          <div class="hello" v-html="questions[currentNumber-1]">{{ questions[currentNumber-1] }}</div>
           <el-form-item>
-            <el-radio-group v-model="questionForm.selection" size="large" @change="saveResult">
-              <el-radio label="A">{{answerA[currentNumber-1]}}</el-radio>
-              <el-radio label="B">{{answerB[currentNumber-1]}}</el-radio>
-              <el-radio label="C">{{answerC[currentNumber-1]}}</el-radio>
-              <el-radio label="D">{{answerD[currentNumber-1]}}</el-radio>
-            </el-radio-group>
+            <center>
+              <el-radio-group v-model="questionForm.selection" size="large" @change="saveResult">
+                <el-radio label="A">{{answerA[currentNumber-1]}}</el-radio>
+                <el-radio label="B">{{answerB[currentNumber-1]}}</el-radio>
+                <el-radio label="C">{{answerC[currentNumber-1]}}</el-radio>
+                <el-radio label="D">{{answerD[currentNumber-1]}}</el-radio>
+              </el-radio-group>
+            </center>
           </el-form-item>
-          <div class="but1">
-            <el-button id="prev" type="primary" @click="prev" :disabled="currentNumber===1">上一题</el-button>
-            <el-button id="next" type="primary" @click="next" :disabled="currentNumber > questionForm.number - 1">下一题</el-button>
-          </div>
+          <center>
+            <div class="but1">
+              <el-button id="prev" type="primary" @click="prev" :disabled="currentNumber===1">上一题</el-button>
+              <el-button id="next" type="primary" @click="next" :disabled="currentNumber > questionForm.number - 1">下一题</el-button>
+            </div>
+          </center>
         </el-main>
       </el-container>
       <br>
-      <el-form-item size="large" class="but2">
-        <el-button type="primary" @click="reTest">重新测试</el-button>
-        <el-button type="primary" @click="submitPaper">提交试卷</el-button>
-      </el-form-item>
+      <center>
+        <el-form-item size="large" class="but2">
+          <el-button type="primary" @click="reTest">重新测试</el-button>
+          <el-button type="primary" @click="submitPaper">提交试卷</el-button>
+        </el-form-item>
+      </center>
     </el-form>
   </div>
 </template>
 
 <script>
+import MathJax from "@/common/js/MathJax";
 export default {
   name: 'question',
   props: ['type'],
@@ -79,11 +88,22 @@ export default {
     this.questionForm.number = sessionStorage.getItem("number");
     this.questionForm.username = sessionStorage.getItem("username");
     this.getPaper(this.questionForm);
-    this.render();
+    this.cur();
   },
   methods: {
+    formatMath() {
+      let that = this;
+      setTimeout(function () {
+        that.$nextTick(function () {
+          if(MathJax.isMathjaxConfig){//判断是否初始配置，若无则配置。
+            MathJax.initMathjaxConfig();
+          }
+          MathJax.MathQueue("hello");//传入组件id，让组件被MathJax渲染
+        })
+      },1);
+    },
     render(){
-      this.$formula(document.getElementById('ques'))
+      this.$formula(document.getElementById("questions[currentNumber-1]"));
     },
     async computeScores() {
       let allQuestions='';
@@ -104,16 +124,8 @@ export default {
             data: "Account=" + this.questionForm.username + "&Question=" + allQuestions + "&Choice=" + allChoices
           }
       ).then(function (response) {
-        if (response.data.length) {
-          console.log(response.data.check)
-          let boolList = response.data.check;
-          let size = response.data.length;
-          for(let i = 0 ; i < size ; i ++){
-            if(boolList[i] === true){
-              this.score++;
-            }
-          }
-          console.log("分数为" + this.score);
+        if (response.data.flag) {
+          this.score += 1;
         } else {
           this.$message({
             message: response.data.message,
@@ -139,12 +151,12 @@ export default {
           console.log("运行到发送get处了");
           console.log("Account=" + this.questionForm.username+"&Phase="+ this.dic[this.questionForm.phase] +"&Number=" + this.questionForm.number)
           this.axios({
-              url:"/question/gen",
-              method: "post",                       // 请求方法
-              headers:{
-                'Content-Type':'application/x-www-form-urlencoded'
-              },
-              data: "Account="+ this.questionForm.username +"&Phase="+ this.dic[this.questionForm.phase] +"&Number=" + this.questionForm.number
+            url:"/question/gen",
+            method: "post",                       // 请求方法
+            headers:{
+              'Content-Type':'application/x-www-form-urlencoded'
+            },
+            data: "Account="+ this.questionForm.username +"&Phase="+ this.dic[this.questionForm.phase] +"&Number=" + this.questionForm.number
           }).then( (response)=>{
             console.log("等待");
             if(response.data) {
@@ -182,7 +194,11 @@ export default {
       } else {
         this.questionForm.selection = '';
       }
-      this.render();
+
+      this.formatMath()
+    },
+    cur() {
+      this.formatMath()
     },
     next() {
       this.currentNumber++;
@@ -191,7 +207,7 @@ export default {
       } else {
         this.questionForm.selection = '';
       }
-      this.render();
+      this.formatMath()
     },
     submitPaper() {
       console.log("number" + this.questionForm.number)
@@ -221,6 +237,9 @@ export default {
     saveResult(value) {
       this.questionForm.resultChoices[this.currentNumber-1] = value;
     },
+  },
+  created() {
+    this.formatMath();
   }
 }
 </script>
@@ -228,12 +247,14 @@ export default {
 <style>
 #quesContainer {
   width: 100%;
-  height: 400px;
+  height: 600px;
   border-radius: 5px;
   font-size: 25px;
   border: rgb(236, 236, 236) solid 3px;
   background-color: rgb(255, 255, 255);
 }
+
+
 .el-main {
   background-color: #f8f8f8;
   color: rgb(85, 85, 85);
@@ -254,7 +275,7 @@ export default {
   line-height: 30px;
   white-space: normal;
   margin-left: 100px;
-  margin-top: 80px;
+  margin-top: 20px;
 }
 
 .show .el-radio__inner {
@@ -266,18 +287,23 @@ export default {
   font-size: 30px;
 }
 
-.but1 .el-button {
-  margin-left: 300px;
+.show .el-radio-group {
   position: relative;
-  left: 140px;
+  left: -50px;
+}
 
+
+.but1 #next  {
+  margin-left: 200px;
+  margin-bottom: 100px;
+  margin-top: 100px;
 }
 
 .but2 .el-button {
   margin-top: 40px;
-  margin-left: 300px;
+  margin-left: 100px;
   position: relative;
-  left: -150px;
+  left: -50px;
 }
 .butt {
   width: 20%;
