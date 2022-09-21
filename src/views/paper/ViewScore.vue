@@ -1,5 +1,5 @@
 <template>
-  <div class="circleBox">
+  <div>
     <el-progress :show-text="false" :width="120" :stroke-width="12" type="circle"
                  :percentage="this.score">
     </el-progress>

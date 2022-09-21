@@ -80,7 +80,7 @@ export default {
       answerB : [],
       answerC : [],
       answerD : [],
-      score: 0,
+      score: 1,
       rules: {
         number: [
           { validator: validateNumber, trigger: 'blur' }
@@ -111,17 +111,47 @@ export default {
     render(){
       this.$formula(document.getElementById("questions[currentNumber-1]"));
     },
-    async computeScores() {
+  computeScores() {
       let allQuestions='';
       let allChoices='';
       let size = this.questionForm.number;
       for (let i = 0; i < size - 1 ; i++) {
         allQuestions+= this.questions[i] + '_';
-        allChoices += this.questionForm.resultChoices[i] + '_';
+        switch(this.questionForm.resultChoices[i]){
+          case 'A':
+            allChoices+=this.answerA[i] + '_';
+            break;
+          case 'B':
+            allChoices+=this.answerB[i] + '_';
+            break;
+          case 'C':
+            allChoices+=this.answerC[i] + '_';
+            break;
+          case 'D':
+            allChoices+=this.answerD[i] + '_';
+            break;
+        }
       }
+      //最后一位不用加下划线
       allQuestions += this.questions[size - 1];
-      allChoices += this.questionForm.resultChoices[size - 1];
-      await this.axios({
+      let endNum = this.questionForm.resultChoices[size - 1];
+      switch(endNum){
+        case 'A':
+          allChoices+=this.answerA[size - 1];
+          break;
+        case 'B':
+          allChoices+=this.answerB[size - 1];
+          break;
+        case 'C':
+          allChoices+=this.answerC[size - 1];
+          break;
+        case 'D':
+          allChoices+=this.answerD[ size - 1];
+          break;
+      }
+      console.log( "题目" + allQuestions)
+      console.log("答案" + allChoices)
+      this.axios({
             url: '/question/check',
             method: "post",                       // 请求方法
             headers: {
@@ -132,8 +162,12 @@ export default {
       ).then(function (response) {
         if (response.data.length) {
           let size = response.data.length;
+          console.log(response.data)
           for(let i = 0 ; i < size ; i ++){
-            this.score += (response.data[i] === true);
+            if(response.data[i] === true){
+              console.log("报错地点",this.score)
+              this.score = this.score + 1;
+            }
           }
         } else {
           this.$message({
@@ -143,15 +177,15 @@ export default {
         }
       })
       this.$message({
-        message: '提交成功 你本次考试的分数为: ' + this.score,
+        message: '提交成功 你本次考试的分数为: ' + (this.score - 1)/this.questionForm.number * 100,
         type: 'success'
       });
-      sessionStorage.setItem("score", this.score);
+      sessionStorage.setItem("score", this.score - 1);
     },
     getPaper() {
       console.log("获得试卷");
       var _this = this;
-      this.score = 0;
+      this.score = 1;
       this.$refs.questionForm.validate(async (valid) => {
         if (valid) {
           _this.currentNumber = 1;
@@ -180,7 +214,6 @@ export default {
                 this.answerB.push(recData[i]['B']);
                 this.answerC.push(recData[i]['C']);
                 this.answerD.push(recData[i]['D']);
-                // this.trueAnswer.push(recData[i]['Answer']);
                 console.log("问题: " + i + this.questions[i]);
               }
             } else {
@@ -237,7 +270,7 @@ export default {
       this.$router.push('/viewScore');
     },
     reTest() {
-      this.score = '';
+      this.score = 1;
       this.currentNumber = 1;
       this.questionForm.selection = '';
       this.questionForm.resultChoices = [];

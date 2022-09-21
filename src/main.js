@@ -15,6 +15,8 @@ Vue.config.productionTip = false
 Vue.prototype.$axios= axios
 import VueSimpleAlert from "vue-simple-alert";
 Vue.use(VueSimpleAlert);
+import CryptoJS from 'crypto-js';
+
 
 // 使用插件
 Vue.use(ElementUI) // element ui 插件

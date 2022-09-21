@@ -26,7 +26,10 @@ export default {
   data() {
     const validatePhase = (rule, value, callback)=>{
       if(!value){
-        callback(new Error('请选择生成题目的类型'))
+        this.$message({
+          message: "请选择输入题目的类型",
+          type: 'warning'
+        })
       }else{
         callback();
       }
@@ -34,9 +37,15 @@ export default {
     const validateNumber = (rule, value, callback) => {
       let reg = /^\d{2}$/
       if (!reg.test(value)) {
-        callback(new Error('输入格式错误'))
+        this.$message({
+          message: "输入格式错误",
+          type: 'error'
+        })
       } else if (value < 10 || value > 30) {
-        callback(new Error('范围不匹配'));
+        this.$message({
+          message: "输入题目范围不匹配！",
+          type: 'error'
+        })
       } else {
         callback();
       }
