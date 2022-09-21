@@ -105,6 +105,7 @@ export default {
           }
       ).then(function (response) {
         if (response.data.length) {
+          console.log(response.data.check)
           let boolList = response.data.check;
           let size = response.data.length;
           for(let i = 0 ; i < size ; i ++){

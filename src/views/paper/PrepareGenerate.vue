@@ -24,6 +24,13 @@ export default {
   name: 'question',
   props: ['type'],
   data() {
+    const validatePhase = (rule, value, callback)=>{
+      if(!value){
+        callback(new Error('请选择生成题目的类型'))
+      }else{
+        callback();
+      }
+    };
     const validateNumber = (rule, value, callback) => {
       let reg = /^\d{2}$/
       if (!reg.test(value)) {
@@ -42,22 +49,37 @@ export default {
       },
       allTypes: ['小学', '初中', '高中'],
       questionForm: {
-        phase: '',
+        phase: 'A',
         username: '',
         number: '',
       },
       rules: {
         number: [
           {validator: validateNumber, trigger: 'blur'}
+        ],
+        phase:[
+          {
+            validator:validatePhase, trigger:'blur'
+          }
         ]
       }
     };
   },
   methods:{
     getPaper(){
-      sessionStorage.setItem("number",this.questionForm.number);
-      sessionStorage.setItem("phase",this.questionForm.phase);
-      this.$router.push('/generate');
+      this.$refs.questionForm.validate( (valid)=>{
+        if(valid){
+          sessionStorage.setItem("number",this.questionForm.number);
+          sessionStorage.setItem("phase",this.questionForm.phase);
+          this.$router.push('/generate');
+        }else{
+          this.$message({
+            message: "请输入符合要求的题目数量",
+            type: "warning",
+          })
+        }
+      })
+
     }
   }
 }

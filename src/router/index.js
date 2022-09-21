@@ -63,19 +63,19 @@ const router = new VueRouter({
     ]
 })
 
-// // 导航守卫，前置处理
-// router.beforeEach((to, from, next) => {
-//     let isAuthenticated = !!sessionStorage.getItem('username')
-//     // 如果路由要跳转到除了登录和注册的界面的话就判断是否已经登录，如果没有登录就强制跳到登录界面
-//     // 判断是否登录
-//     if (to.path !== '/login' && to.path !== '/register' && !isAuthenticated) {
-//         next({ path: '/login' })
-//         // eslint-disable-next-line no-undef
-//         Message({
-//             message: '请先登录！',
-//             type: "warning",
-//         });
-//     } else next()
-// })
+// 导航守卫，前置处理
+router.beforeEach((to, from, next) => {
+    let isAuthenticated = !!sessionStorage.getItem('username')
+    // 如果路由要跳转到除了登录和注册的界面的话就判断是否已经登录，如果没有登录就强制跳到登录界面
+    // 判断是否登录
+    if (to.path !== '/login' && to.path !== '/register' && !isAuthenticated) {
+        next({ path: '/login' })
+        // eslint-disable-next-line no-undef
+        Message({
+            message: '请先登录！',
+            type: "warning",
+        });
+    } else next()
+})
 
 export default router;
