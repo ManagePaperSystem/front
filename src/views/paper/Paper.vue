@@ -4,46 +4,36 @@
       style="width: 100%">
     <el-table-column
         label="题目"
-        width="180">
-      <template slot-scope="scope">
-        <span style="margin-left: 10px">{{ scope.row.question }}</span>
-      </template>
+        width="300"
+        prop="question"
+        id="q">
     </el-table-column>
     <el-table-column
         label="选项A"
-        width="180">
-      <template slot-scope="scope">
-        <span>{{ scope.row.answerA}}</span>
-      </template>
+        width="180"
+        prop="answerA">
     </el-table-column>
-
     <el-table-column
         label="选项B"
-        width="180">
-      <template slot-scope="scope">
-        <span>{{ scope.row.answerB}}</span>
-      </template>
+        width="180"
+    prop="answerB">
     </el-table-column>
     <el-table-column
         label="选项C"
-        width="180">
-      <template slot-scope="scope">
-        <span>{{ scope.row.answerC}}</span>
-      </template>
+        width="180"
+        prop="answerC">
+
     </el-table-column>
     <el-table-column
         label="选项D"
-        width="180">
-      <template slot-scope="scope">
-        <span>{{ scope.row.answerD}}</span>
-      </template>
+        width="180"
+        prop="answerD">
+
     </el-table-column>
     <el-table-column
         label="正确答案"
-        width="180">
-      <template slot-scope="scope">
-        <span>{{ scope.row.correctAnswer}}</span>
-      </template>
+        width="180"
+        prop="correctAnswer">
     </el-table-column>
   </el-table>
 </template>
@@ -69,8 +59,12 @@ export default {
     this.username = sessionStorage.getItem("username")
     console.log("时间"+this.timeString)
     this.getCurrentTimePaper();
+    this.render();
   },
   methods:{
+    render(){
+      this.$formula(document.getElementById('q'));
+    },
     getCurrentTimePaper(){
       this.axios({
         url: "/question/check/paper",

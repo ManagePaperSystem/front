@@ -1,36 +1,38 @@
 <template>
   <el-table
+      v-loading="loading"
       :data="tableData"
       style="width: 100%">
     <el-table-column
         label="试卷生成时间"
-        width="180">
-      <template slot-scope="scope">
-        <i class="el-icon-time"></i>
-        <span style="margin-left: 10px">{{ scope.row.timeContent }}</span>
-      </template>
+        width="300"
+        prop="timeContent"
+    >
     </el-table-column>
     <el-table-column
         label="姓名"
-        width="180">
-      <template slot-scope="scope">
-          <p>{{ scope.row.uname }}</p>
-      </template>
+        width="300"
+        prop="uname"
+    >
     </el-table-column>
-    <el-table-column label="操作">
+    <el-table-column label="操作" width="300">
       <template slot-scope="scope">
         <el-button
-            size="mini"
             @click="viewSpecifyPaper(scope.row)">查看</el-button>
+        <el-button
+            type="danger"
+            @click="deletePaper(scope.$index)">删除</el-button>
       </template>
     </el-table-column>
   </el-table>
 </template>
 
 <script>
+
 export default {
   data() {
     return {
+      loading :true,
       tableData:[
         {
           timeContent:'',
@@ -45,10 +47,36 @@ export default {
     this.tableData.pop()
     this.username = sessionStorage.getItem("username");
     this.password = sessionStorage.getItem("password");
+    this.loading=true;
     this.getCurrentUserPapers();
+    this.loading=false;
     console.log(this.username)
   },
   methods: {
+    deletePaper(index){
+      let deleteData = this.tableData[index];
+      this.axios({
+        url:"question/delete",
+        method:"post",
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        data: "Account=" + this.username + "&TimeStr=" +deleteData['timeContent'] }
+        ).then( (response)=> {
+        if(response.data.flag ){
+          this.$message({
+            message: "删除成功",
+            type: "warning"
+          });
+          this.tableData.splice(index,1)
+        }else {
+          this.$message({
+            message: "查看当前用户试卷信息失败",
+            type: "warning"
+          });
+        }
+      })
+      },
     viewSpecifyPaper(row) {
       let viewTime = row.timeContent
       sessionStorage.setItem("timeString",viewTime)
@@ -73,7 +101,6 @@ export default {
               timeContent: this.timeList[i],
               uname:this.username
             })
-
           }
         } else {
           this.$message({

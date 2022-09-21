@@ -17,13 +17,13 @@
 export default {
   data(){
     return{
-      score: 10,
-      fullNumber: 20
+      score: 0,
+      fullNumber: ''
     }
   },
   mounted() {
-    // this.score = sessionStorage.getItem("score");
-    // this.fullNumber = sessionStorage.getItem("number")
+     this.score = sessionStorage.getItem("score");
+     this.fullNumber = sessionStorage.getItem("number")
     this.score = this.score / this.fullNumber * 100
     console.log(this.score)
   },

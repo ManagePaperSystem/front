@@ -4,7 +4,7 @@
       <el-container id="quesContainer">
         <el-main>
           <span>NO.{{currentNumber}}</span>
-          <div style="text-align: center;"> <span>{{questions[currentNumber-1]}} </span></div>
+          <div style="text-align: center;" id="ques"> <span>{{questions[currentNumber-1]}} </span></div>
           <el-form-item>
             <el-radio-group v-model="questionForm.selection" size="large" @change="saveResult">
               <el-radio label="A">{{answerA[currentNumber-1]}}</el-radio>
@@ -79,10 +79,11 @@ export default {
     this.questionForm.number = sessionStorage.getItem("number");
     this.questionForm.username = sessionStorage.getItem("username");
     this.getPaper(this.questionForm);
+    this.render();
   },
   methods: {
     render(){
-      this.$formula(document.getElementById("q"));
+      this.$formula(document.getElementById('ques'))
     },
     async computeScores() {
       let allQuestions='';
@@ -103,8 +104,15 @@ export default {
             data: "Account=" + this.questionForm.username + "&Question=" + allQuestions + "&Choice=" + allChoices
           }
       ).then(function (response) {
-        if (response.data.flag) {
-          this.score += 1;
+        if (response.data.length) {
+          let boolList = response.data.check;
+          let size = response.data.length;
+          for(let i = 0 ; i < size ; i ++){
+            if(boolList[i] === true){
+              this.score++;
+            }
+          }
+          console.log("分数为" + this.score);
         } else {
           this.$message({
             message: response.data.message,
@@ -173,7 +181,7 @@ export default {
       } else {
         this.questionForm.selection = '';
       }
-
+      this.render();
     },
     next() {
       this.currentNumber++;
@@ -182,6 +190,7 @@ export default {
       } else {
         this.questionForm.selection = '';
       }
+      this.render();
     },
     submitPaper() {
       console.log("number" + this.questionForm.number)
