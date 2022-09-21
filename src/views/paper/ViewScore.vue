@@ -22,8 +22,8 @@ export default {
     }
   },
   mounted() {
-     this.score = sessionStorage.getItem("score");
-     this.fullNumber = sessionStorage.getItem("number")
+    this.score = sessionStorage.getItem("score");
+    this.fullNumber = sessionStorage.getItem("number")
     this.score = this.score / this.fullNumber * 100
     console.log(this.score)
   },

@@ -45,9 +45,15 @@ export default {
     const validateNumber = (rule, value, callback) => {
       let reg= /^\d{2}$/
       if(!reg.test(value)) {
-        callback(new Error('输入格式错误'))
+        this.$message({
+          message: "输入格式有误",
+          type: 'error'
+        })
       } else if (value < 10 || value > 30) {
-        callback(new Error('范围不匹配'));
+        this.$message({
+          message: "输入题目范围不匹配",
+          type: 'error'
+        })
       } else {
         callback();
       }
@@ -64,7 +70,6 @@ export default {
         username:'',
         number: '',
         selection: '',
-        //选择的答案
         resultChoices: [],
       },
       currentNumber : 1,
@@ -88,6 +93,7 @@ export default {
     this.questionForm.number = sessionStorage.getItem("number");
     this.questionForm.username = sessionStorage.getItem("username");
     this.getPaper(this.questionForm);
+    this.cur();
     this.cur();
   },
   methods: {
@@ -124,8 +130,11 @@ export default {
             data: "Account=" + this.questionForm.username + "&Question=" + allQuestions + "&Choice=" + allChoices
           }
       ).then(function (response) {
-        if (response.data.flag) {
-          this.score += 1;
+        if (response.data.length) {
+          let size = response.data.length;
+          for(let i = 0 ; i < size ; i ++){
+            this.score += (response.data[i] === true);
+          }
         } else {
           this.$message({
             message: response.data.message,

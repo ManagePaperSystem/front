@@ -26,7 +26,7 @@
       </template>
     </el-table-column>
   </el-table>
-  <el-button>返回首页</el-button>
+  <el-button @click="returnHome">返回首页</el-button>
   </div>
 </template>
 
@@ -56,6 +56,9 @@ export default {
     console.log(this.username)
   },
   methods: {
+    returnHome() {
+      this.$router.push('/home');
+    },
     deletePaper(index){
       let deleteData = this.tableData[index];
       this.axios({
@@ -69,7 +72,7 @@ export default {
         if(response.data.flag ){
           this.$message({
             message: "删除成功",
-            type: "warning"
+            type: "success"
           });
           this.tableData.splice(index,1)
         }else {

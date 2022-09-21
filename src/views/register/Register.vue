@@ -1,53 +1,49 @@
 <template>
-  <div>
-    <el-card class="box-card">
-      <h2>注册</h2>
-      <el-form
+  <div class="box-card">
+    <h2>注&nbsp;&nbsp;册</h2>
+    <el-form
         :model="ruleForm"
         status-icon
         :rules="rules"
         ref="ruleForm"
-        label-position="left"
-        label-width="80px"
         class="demo-ruleForm"
-      >
-        <el-form-item label="用户名" prop="uname">
-          <el-input v-model="ruleForm.uname" placeholder="请输入邮箱号"></el-input>
-        </el-form-item>
-        <el-form-item label="密码" prop="pass" >
-          <el-input
-              placeholder="请输入密码"
+    >
+      <el-form-item label="用户名" prop="uname">
+        <el-input v-model="ruleForm.uname" placeholder="请输入邮箱号"></el-input>
+      </el-form-item>
+      <el-form-item label="密码" prop="pass" >
+        <el-input
+            placeholder="请输入密码"
             type="password"
             v-model="ruleForm.password"
             autocomplete="off"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="确认密码" prop="password" >
-          <el-input
-              placeholder="请再次输入密码"
+        ></el-input>
+      </el-form-item>
+      <el-form-item label="确认密码" prop="password" >
+        <el-input
+            placeholder="请再次输入密码"
             type="password"
             v-model="ruleForm.passwordCheck"
             autocomplete="off"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="验证码" prop="mailIdentification" >
-          <el-input
-              placeholder="请输入验证码"
-              type="mailIdentification"
-              v-model="ruleForm.mailIdentification"
-              autocomplete="off"
-          ></el-input>
-          <el-button @click="getCode">发送验证码</el-button>
-        </el-form-item>
-      </el-form>
-      <div class="btnGroup">
-        <el-button type="primary" @click="submitForm"  v-loading="loading"
-          >提交</el-button
-        >
-        <el-button @click="resetForm">重置</el-button>
-        <el-button @click="goBack">返回</el-button>
-      </div>
-    </el-card>
+        ></el-input>
+      </el-form-item>
+      <el-form-item label="验证码" prop="mailIdentification" >
+        <el-input
+            placeholder="请输入验证码"
+            type="mailIdentification"
+            v-model="ruleForm.mailIdentification"
+            autocomplete="off"
+        ></el-input>
+        <el-button type="success" @click="getCode">发送验证码</el-button>
+      </el-form-item>
+    </el-form>
+    <div class="btnGroup">
+      <el-button type="primary" @click="submitForm"  v-loading="loading"
+      >提交</el-button
+      >
+      <el-button type="danger" @click="resetForm">重置</el-button>
+      <el-button type="info" @click="goBack">返回</el-button>
+    </div>
   </div>
 </template>
 
@@ -56,6 +52,18 @@ import ElementUI from "element-ui";
 
 export default {
   data() {
+    const checkEmail = (rule, value, cb) => {
+      // 验证邮箱的正则表达式
+      const regEmail = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/;
+      if (regEmail.test(value)) {
+        return cb();
+      }
+      this.$message({
+        message: "请输入合法的邮箱",
+        type: 'warning'
+      })
+    };
+
     const validatePass = (rule, value, callback) => {
       if (value === "") {
         callback(new Error("请输入密码"));
@@ -68,9 +76,15 @@ export default {
     };
     const validatePass2 = (rule, value, callback) => {
       if (value === "") {
-        callback(new Error("请再次输入密码"));
+        this.$message({
+          message: "请再次输入密码",
+          type: 'warning'
+        })
       } else if (value !== this.ruleForm.password) {
-        callback(new Error("两次输入密码不一致!"));
+        this.$message({
+          message: "两次输入的密码不一致",
+          type: 'error'
+        })
       } else {
         callback();
       }
@@ -90,6 +104,9 @@ export default {
         passwordCheck: [
           { required: true, validator: validatePass2, trigger: "blur" },
         ],
+        mailIdentification: [
+          { required:true, validator: checkEmail, trigger: 'blur' }
+        ]
       },
       loading: false
     };
@@ -173,14 +190,68 @@ export default {
 };
 </script>
 
-<style scoped>
-/* 设置登录面板居中，宽度为400px */
-.box-card {
-  margin: auto auto;
-  width: 400px;
+<style>
+
+.box-card h2 {
+  font-size: 60px;
+  position: center;
+  margin-bottom: 50px;
 }
-/* 设置登录面板中的表单居中 */
-.login-from {
-  margin: auto auto;
+
+.box-card .el-form-item {
+  width: 25%;
+  font-size: 30px;
+  height: 100px;
+  margin-bottom: 0;
+  position: relative;
+  left: 650px;
+}
+
+.box-card .el-form-item__label {
+  font-size: 30px;
+  height: 50px;
+  color: #1095ce;
+  background-color: rgba(7, 234, 97, 0.63);
+  width: 150px;
+  border-radius: 15px;
+  padding-top: 5px;
+  text-align: center;
+  margin-bottom: -45px;
+  position: center;
+}
+
+.box-card .el-input__inner {
+  width: 60%;
+  height: 50px;
+  margin-left: 200px;
+  margin-top: -10px;
+  font-size: 20px;
+  position: center;
+}
+
+.box-card .el-button {
+  margin-left: 50px;
+  width: 200px;
+  height: 50px;
+  position: relative;
+  left: 250px;
+  display: inline-block;
+  border-radius: 20px;
+  font-size: 25px;
+  padding-top: 10px;
+  margin-top: 40px;
+}
+
+.box-card .btnGroup .el-button {
+  margin-left: 50px;
+  width: 200px;
+  height: 50px;
+  position: relative;
+  left: -18px;
+  display: inline-block;
+  border-radius: 20px;
+  font-size: 25px;
+  padding-top: 10px;
+  margin-top: 70px;
 }
 </style>

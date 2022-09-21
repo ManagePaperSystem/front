@@ -39,6 +39,8 @@
         prop="correctAnswer">
     </el-table-column>
   </el-table>
+    <el-button @click="returnHome">返回首页</el-button>
+    <el-button @click="returnPapers">返回所有试卷界面</el-button>
   </div>
 </template>
 <script>
@@ -68,6 +70,12 @@ export default {
     this.formatMath()
   },
   methods:{
+    returnHome(){
+      this.$router.push('/home');
+    },
+    returnPapers(){
+      this.$router.push('/pastPapers');
+    },
     created() {
       this.formatMath();
     },
