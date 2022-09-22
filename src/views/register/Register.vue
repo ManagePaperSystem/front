@@ -129,7 +129,6 @@ export default {
         mode: CryptoJS.mode.CBC,
         padding: CryptoJS.pad.ZeroPadding
       });
-      console.log("加密后", encrypted.ciphertext)
       return CryptoJS.enc.Base64.stringify(encrypted.ciphertext);
     },
     getCode(){
@@ -195,7 +194,6 @@ export default {
             }
             // 不管响应成功还是失败，收到后端响应的消息后就不再让登录按钮显示加载动画了
             _this.loading = false;
-            console.log(res);
           });
         } else { // 如果账号或密码有一个没填，就直接提示必填，不向后端请求
           console.log("error submit!!");

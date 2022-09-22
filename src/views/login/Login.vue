@@ -64,16 +64,12 @@ export default {
       //密钥和偏移量
       let key = CryptoJS.enc.Utf8.parse("1234567890123456");
       let iv =  CryptoJS.enc.Utf8.parse('1234567890123456');
-      console.log("key  " +  key)
-      console.log("iv  " + iv)
       let srcs = CryptoJS.enc.Utf8.parse(word);
       var encrypted = CryptoJS.AES.encrypt(srcs, key, {
         iv: iv,
         mode: CryptoJS.mode.CBC,
         padding: CryptoJS.pad.ZeroPadding
       });
-      console.log("加密后", CryptoJS.enc.Base64.stringify(encrypted.ciphertext))
-      console.log("解密后", this.myDecrypt(CryptoJS.enc.Base64.stringify(encrypted.ciphertext)))
       return CryptoJS.enc.Base64.stringify(encrypted.ciphertext);
     },
     myDecrypt(word) {
@@ -124,7 +120,6 @@ export default {
                 type: "success",
               });
             } else {
-              console.log("响应失败");
               // 当响应的编码不为 0 时，说明登录失败
               // 显示后端响应的失败信息
               this.$message({
@@ -136,7 +131,6 @@ export default {
             _this.loading = false;
           });
         } else {  // 如果账号或密码有一个没填，就直接提示必填，不向后端请求
-          console.log("error submit!!");
           this.loading = false;
           return false;
         }

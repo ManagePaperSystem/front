@@ -107,8 +107,6 @@ export default {
       //密钥和偏移量
       let key = CryptoJS.enc.Utf8.parse("1234567890123456");
       let iv =  CryptoJS.enc.Utf8.parse('1234567890123456');
-      console.log("key  " +  key)
-      console.log("iv  " + iv)
       let srcs = CryptoJS.enc.Utf8.parse(word);
       var encrypted = CryptoJS.AES.encrypt(srcs, key, {
         iv: iv,

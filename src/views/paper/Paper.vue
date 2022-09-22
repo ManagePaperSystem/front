@@ -106,7 +106,6 @@ export default {
         console.log("开始获取数据")
         if(response.data.length){
           let recData = response.data;
-          console.log(recData)
           let size = response.data.length;
           for( let i = 0 ; i < size ; i ++){
             this.tableData.push({
@@ -117,7 +116,6 @@ export default {
               answerD:recData[i]['D'],
               correctAnswer: recData[i]['Answer']
             })
-            console.log(recData[i]['Question'])
           }
         }else {
           this.$message({

@@ -12,7 +12,6 @@
       <el-button @click="returnHome">回到首页</el-button>
       <el-button @click="returnPaper">重新考试</el-button>
     </el-button-group>
-
   </div>
 </template>
 

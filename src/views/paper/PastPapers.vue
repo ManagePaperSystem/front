@@ -53,7 +53,6 @@ export default {
     this.loading=true;
     this.getCurrentUserPapers();
     this.loading=false;
-    console.log(this.username)
   },
   methods: {
     returnHome() {
@@ -90,7 +89,6 @@ export default {
     },
 
     getCurrentUserPapers() {
-      console.log("name" + this.username)
       this.axios({
         url: "/question/check/list",
         method: "post",

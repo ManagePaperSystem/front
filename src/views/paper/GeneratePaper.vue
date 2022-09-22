@@ -166,12 +166,9 @@ export default {
           for(let i = 0 ; i < size ; i ++){
             console.log("进入循环 " + i)
             if(response.data[i] === true){
-              console.log("第" + i + "次")
               allN  = allN + 1;
             }
           }
-          console.log(response.data)
-          console.log("all 为"  + allN)
           sessionStorage.setItem("score", allN);
         } else {
           this.$message({
@@ -194,8 +191,6 @@ export default {
           _this.currentNumber = 1;
           _this.questionForm.selection = '';
           _this.questionForm.resultChoices = [];
-          console.log("运行到发送get处了");
-          console.log("Account=" + this.questionForm.username+"&Phase="+ this.dic[this.questionForm.phase] +"&Number=" + this.questionForm.number)
           this.axios({
             url:"/question/gen",
             method: "post",                       // 请求方法
@@ -217,7 +212,6 @@ export default {
                 this.answerB.push(recData[i]['B']);
                 this.answerC.push(recData[i]['C']);
                 this.answerD.push(recData[i]['D']);
-                console.log("问题: " + i + this.questions[i]);
               }
             } else {
               _this.$message({
@@ -255,13 +249,7 @@ export default {
       this.formatMath()
     },
     submitPaper() {
-      console.log("number" + this.questionForm.number)
-      console.log("resultChoices" + this.questionForm.resultChoices.length)
-      console.log("currentNumber" + this.currentNumber)
       let _this = this;
-      for( let i = 0 ; i < this.questionForm.resultChoices.length ;i++){
-        console.log("chooseAnswer" + this.questionForm.resultChoices[i]);
-      }
       if (parseInt(this.questionForm.resultChoices.length) !==parseInt(this.questionForm.number)) {
         _this.$message({
           message: '请完成所有题目之后再提交',
