@@ -65,29 +65,34 @@ export default {
         })
       }
     };
-
-    const validatePass = (rule, value, callback) => {
-      if (value === "") {
+    let validatePasswordLegal = (rule, value, callback) => {
+      let reg= /^.*(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])\w{6,10}$/
+      if (value === '') {
         this.$message({
-          message: "请输入密码",
-          type: 'warning'
+          message: "请输入密码！",
+          type: 'error'
+        })
+      } else if(!reg.test(value)) {
+        this.$message({
+          message: "密码必须是由6-10位大小写字母+数字组合！",
+          type: 'error'
         })
       } else {
-        if (this.ruleForm.passwordCheck !== "") {
-          this.$refs.ruleForm.validateField("passwordCheck");
+        if (this.ruleForm.newPassword !== '') {
+          this.$refs.ruleForm.validateField('checkPassword');
         }
         callback();
       }
     };
-    const validatePass2 = (rule, value, callback) => {
-      if (value === "") {
+    let validatePasswordSame = (rule, value, callback) => {
+      if (value === '') {
         this.$message({
-          message: "请再次输入密码",
+          message: "请再次输入新密码！",
           type: 'warning'
         })
-      } else if (value !== this.ruleForm.password) {
+      } else if (value !== this.ruleForm.checkPassword) {
         this.$message({
-          message: "两次输入的密码不一致",
+          message: "两次输入密码不一致！",
           type: 'error'
         })
       } else {
@@ -105,9 +110,9 @@ export default {
         uname: [
           { required: true, validator: checkEmail,trigger: "blur" },
         ],
-        password: [{ required: true, validator: validatePass, trigger: "blur" }],
+        password: [{ required: true, validator: validatePasswordLegal, trigger: "blur" }],
         passwordCheck: [
-          { required: true, validator: validatePass2, trigger: "blur" },
+          { required: true, validator: validatePasswordSame, trigger: "blur" },
         ],
       },
       loading: false
