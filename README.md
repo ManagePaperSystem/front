@@ -1,24 +1,29 @@
-# vue-login-demo
+# 中小学卷子生成程序（结对编程项目）
 
-## Project setup
+## 项目开发环境
+
+### 前端
+
+- node v16.17.0
+- vue 3
+
+### 后端
+
+- Go SDK v1.19
+
+## 配置项目所需的包
 ```
 npm install
 ```
-
-### Compiles and hot-reloads for development
+## 运行项目
 ```
 npm run serve
 ```
 
-### Compiles and minifies for production
-```
-npm run build
-```
+项目已经部署到服务器上，可以点击这个[链接](http://124.222.69.105:8080)，支持**发送邮件，修改密码，生成试卷，查看往年试卷**等功能
 
-### Lints and fixes files
-```
-npm run lint
-```
+**管理员**：张三1 
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+**密码**：Admin123
+
+注：此项目在Github上开源，详情请点击[此链接](https://github.com/ManagePaperSystem)
