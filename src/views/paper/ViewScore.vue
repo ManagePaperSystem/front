@@ -25,9 +25,9 @@ export default {
   },
   mounted() {
     this.score = sessionStorage.getItem("score");
-    this.fullNumber = sessionStorage.getItem("number")
-    console.log("分数素数" + this.score + "      " + this.fullNumber)
-    this.score = Number(parseFloat(this.score / this.fullNumber * 100).toFixed(2))
+    this.fullNumber = sessionStorage.getItem("number");
+    console.log("分数素数" + this.score + "      " + this.fullNumber);
+    this.score = Number(parseFloat(this.score / this.fullNumber * 100).toFixed(2));
     console.log(this.score)
   },
   methods:{

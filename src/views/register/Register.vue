@@ -58,16 +58,20 @@ export default {
       const regEmail = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/;
       if (regEmail.test(value)) {
         return cb();
+      }else {
+        this.$message({
+          message: "请输入合法的邮箱",
+          type: 'warning'
+        })
       }
-      this.$message({
-        message: "请输入合法的邮箱",
-        type: 'warning'
-      })
     };
 
     const validatePass = (rule, value, callback) => {
       if (value === "") {
-        callback(new Error("请输入密码"));
+        this.$message({
+          message: "请输入密码",
+          type: 'warning'
+        })
       } else {
         if (this.ruleForm.passwordCheck !== "") {
           this.$refs.ruleForm.validateField("passwordCheck");
@@ -99,15 +103,12 @@ export default {
       },
       rules: {
         uname: [
-          { required: true, message: "用户名不能为空！", trigger: "blur" },
+          { required: true, validator: checkEmail,trigger: "blur" },
         ],
         password: [{ required: true, validator: validatePass, trigger: "blur" }],
         passwordCheck: [
           { required: true, validator: validatePass2, trigger: "blur" },
         ],
-        mailIdentification: [
-          { required:true, validator: checkEmail, trigger: 'blur' }
-        ]
       },
       loading: false
     };
@@ -127,28 +128,33 @@ export default {
       return CryptoJS.enc.Base64.stringify(encrypted.ciphertext);
     },
     getCode(){
-      this.axios({
-        url:"/user/getcode",
-        method:"post",
-        headers:{
-          'Content-Type':'application/x-www-form-urlencoded'
-        },
-        data:"Account=" + this.ruleForm.uname
-      }).then((res)=>{
-        if(res.data.flag === true){
-          console.log("邮箱发送验证码成功")
-        }else if(res.data.flag === false){
-          this.$message({
-            message: "邮箱已经被注册，请换一个邮箱",
-            type: "warning",
-          });
-        }else{
-          this.$message({
-            message: "网络错误",
-            type: "warning",
+      this.$refs.ruleForm.validate((valid)=> {
+        if(valid) {
+          this.axios({
+            url: "/user/getcode",
+            method: "post",
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            data: "Account=" + this.ruleForm.uname
+          }).then((res) => {
+            if (res.data.flag === true) {
+              console.log("邮箱发送验证码成功")
+            } else if (res.data.flag === false) {
+              this.$message({
+                message: "邮箱已经被注册，请换一个邮箱",
+                type: "warning",
+              });
+            } else {
+              this.$message({
+                message: "网络错误",
+                type: "warning",
+              })
+            }
           })
         }
-      })
+      }
+    )
     },
     submitForm() {
       this.$refs.ruleForm.validate((valid) => {
@@ -171,7 +177,6 @@ export default {
                 method:"post",
                 headers:{
                   'Content-Type':'application/x-www-form-urlencoded'
-                  // 'Content-Type':'application/json'
                 },
                 data:"Account=" + this.ruleForm.uname + "&Password=" + this.myEncrypt(this.ruleForm.password)
               }).then( (response)=> {

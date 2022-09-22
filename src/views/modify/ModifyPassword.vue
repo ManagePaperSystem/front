@@ -25,6 +25,7 @@
 
 <script>
 import ElementUI from "element-ui";
+import CryptoJS from "crypto-js/crypto-js";
 
 export default {
   name: 'modifyPassword',
@@ -102,6 +103,20 @@ export default {
     this.ruleForm.username = sessionStorage.getItem("username");
   },
   methods: {
+    myEncrypt(word){
+      //密钥和偏移量
+      let key = CryptoJS.enc.Utf8.parse("1234567890123456");
+      let iv =  CryptoJS.enc.Utf8.parse('1234567890123456');
+      console.log("key  " +  key)
+      console.log("iv  " + iv)
+      let srcs = CryptoJS.enc.Utf8.parse(word);
+      var encrypted = CryptoJS.AES.encrypt(srcs, key, {
+        iv: iv,
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.ZeroPadding
+      });
+      return CryptoJS.enc.Base64.stringify(encrypted.ciphertext);
+    },
     submitForm() {
       this.ruleForm.username = sessionStorage.getItem("username");
       let _this = this;
@@ -114,7 +129,7 @@ export default {
               'Content-Type':'application/x-www-form-urlencoded'
                   // 'Content-Type':'application/json'
             },
-            data: "Account="+this.ruleForm.username + "&Password=" + this.ruleForm.newPassword
+            data: "Account="+this.ruleForm.username + "&Password=" + this.myEncrypt(this.ruleForm.newPassword)
           }
           ).then(function(response) {
             if(response.data.flag === true){
