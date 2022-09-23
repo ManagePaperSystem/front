@@ -40,7 +40,7 @@ export default {
       this.$router.push('/home');
     },
     returnPaper(){
-      this.$router.push('/generate')
+      this.$router.push('/prepareGenerate')
     },
   }
 }
